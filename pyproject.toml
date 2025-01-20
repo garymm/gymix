@@ -1,0 +1,62 @@
+[project]
+name = "gymix"
+version = "0.1.0"
+description = "interface for reinforcement learning environments in JAX"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.11"
+dependencies = ["jax"]
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+exclude = ["*_test.py"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gymix"]
+
+[dependency-groups]
+dev = ["pyright==1.1.391", "ruff>=0.9.1"]
+
+[tool.uv]
+
+# restrict to platforms we care about so that version resolution is faster and more likely to succeed
+# (e.g. don't fail if a package isn't built for windows)
+environments = [
+    "sys_platform == 'darwin' and platform_machine == 'arm64'",
+    "sys_platform == 'linux' and platform_machine == 'aarch64'",
+    "sys_platform == 'linux' and platform_machine == 'x86_64'",
+]
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    # Please only ignore warnings that come from a transitive dependency that we
+    # can't easily avoid.
+    # See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#controlling-warnings
+    # action:message:category:module:line
+    "error",
+]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "A",   # flake8-builtins
+    "B",   # flake8-bugbear
+    "D",   # pydocstyle https://www.pydocstyle.org/en/stable/error_codes.html
+    "E",   # pycodestyle
+    "F",   # Pyflakes
+    "I",   # isort
+    "PT",  # flake8-pytest-style
+    "SIM", # flake8-simplify
+    "UP",  # pyupgrade
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+
+[tool.pyright]
+typeCheckingMode = "standard"

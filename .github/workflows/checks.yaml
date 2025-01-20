@@ -1,0 +1,33 @@
+---
+name: checks
+on: # yamllint disable-line rule:truthy
+  pull_request:
+  push:
+    branches:
+      - master
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+      - name: ruff format
+        run: uv run -- ruff format --check
+      - name: ruff check
+        run: uv run -- ruff check
+
+  pyright:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+      - name: uv sync
+        run: uv sync --all-extras
+      - name: pyright
+        run: uv run -- pyright
